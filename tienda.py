@@ -20,10 +20,6 @@
 # lista de productos y cantidades
 # cliente
 
-
-from tkinter import N
-
-
 class Tienda:
     def __init__(self, name, address, phone):
         self.name = name
@@ -32,14 +28,21 @@ class Tienda:
         self.hstSale = []
         self.products = []
         self.listClients = []
-    # definir un metodo para agregar un nuevo producto
 
+    # definir un metodo para agregar un nuevo producto
     def agregarProducto(self, product):
         self.products.append(product)
 
     def imprimirProductos(self):
         for product in self.products:
             print(product)
+
+    def agregarCliente(self, client):
+        self.listClients.append(client)
+
+    def imprimirClientes(self):
+        for client in self.listClients:
+            print(client)
 
 
 class Product:
@@ -57,6 +60,9 @@ class Client:
         self.document = document
         self.listBuys = []
 
+    def __str__(self):
+        return self.name + "-" + str(self.document)
+
 
 class Sales:
     def __init__(self, date, client):
@@ -71,6 +77,8 @@ while True:
     instrucciones = """
         Ingrese P para agregar un producto a la tienda
         Ingrese IP para imprimir productos de la tienda
+        Ingrese C para agregar un nuevo cliente
+        Ingrese IC para imprimos los clientes d ela tienda
     """
     operacion = input(instrucciones)
     if operacion == "P":
@@ -80,3 +88,10 @@ while True:
         tienda.agregarProducto(nuevoProducto)
     elif operacion == "IP":
         tienda.imprimirProductos()
+    elif operacion == "C":
+        nombreCliente = input("Ingrese el nombre del cliente: ")
+        documentoCliente = input("Ingrese el documento del cliente: ")
+        nuevoCliente = Client(nombreCliente, documentoCliente)
+        tienda.agregarCliente(nuevoCliente)
+    elif operacion == "IC":
+        tienda.imprimirClientes()
