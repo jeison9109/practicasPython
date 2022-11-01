@@ -20,6 +20,9 @@
 # lista de productos y cantidades
 # cliente
 
+import json
+
+
 class Tienda:
     def __init__(self, name, address, phone):
         self.name = name
@@ -37,8 +40,44 @@ class Tienda:
         for product in self.products:
             print(product)
 
+    def convertirProductosADiccionario(self):
+        diccProductos = {"productos": []}
+        for producto in self.products:
+            # diccProductos["productos"].append(
+            #     {"nombre": producto.name, "precio": producto.price})
+            diccProductos["productos"].append(producto.__dict__)
+        with open('productosJSON.json', 'w') as jsonFile:
+            json.dump(diccProductos, jsonFile)
+            jsonFile.close()
+
+    def convertirDiccionarioAProductos(self):
+        with open('productosJSON.json') as jsonFile:
+            diccionarioProductos = json.load(jsonFile)
+            jsonFile.close()
+        for producto in diccionarioProductos["productos"]:
+            nuevoProducto = Product(producto["nombre"], producto["precio"])
+            self.products.append(nuevoProducto)
+
+    def convertirClientesADiccionario(self):
+        diccClientes = {"clientes": []}
+        for client in self.listClients:
+            diccClientes["clientes"].append(
+                {"nombre": client.name, "documento": client.document})
+        with open('clients.json', 'w') as jsonFile:
+            json.dump(diccClientes, jsonFile)
+            jsonFile.close()
+
+    def convertirDiccionarioAClientes(self):
+        with open('clients.json') as jsonFile:
+            diccionarioCliente = json.load(jsonFile)
+            jsonFile.close()
+        for client in diccionarioCliente["clientes"]:
+            newClient = Client(client["nombre"], client["documento"])
+            self.listClients.append(newClient)
+
     def agregarCliente(self, client):
         self.listClients.append(client)
+        self.convertirClientesADiccionario()
 
     def imprimirClientes(self):
         for client in self.listClients:
@@ -73,6 +112,20 @@ class Sales:
 
 # Crear la logica de la aplicacion
 tienda = Tienda("PrevalentWare", "Calle 234#323-22", "321 242423")
+
+try:
+    # products = tienda.convertirDiccionarioAProductos()
+    tienda.convertirDiccionarioAProductos()
+
+except:
+    print("No existe el archivo producto.Inicialize productos")
+
+try:
+    tienda.convertirDiccionarioAClientes()
+except:
+    print("No existe el archivo de cliente, inicializar clientes")
+
+
 while True:
     instrucciones = """
         Ingrese P para agregar un producto a la tienda
@@ -88,6 +141,7 @@ while True:
         tienda.agregarProducto(nuevoProducto)
     elif operacion == "IP":
         tienda.imprimirProductos()
+        tienda.convertirProductosADiccionario()
     elif operacion == "C":
         nombreCliente = input("Ingrese el nombre del cliente: ")
         documentoCliente = input("Ingrese el documento del cliente: ")
